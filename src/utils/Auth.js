@@ -1,12 +1,5 @@
 const BASE_URL = "https://auth.nomoreparties.co";
 
-// function checkResOk(res) {
-//   if (res.ok) {
-//     return res.json();
-//   }
-//   return Promise.reject(`Ошибка: ${res.status}`);
-// }
-
 function checkResOk(res) {
   if (res.ok) {
     return res.json();

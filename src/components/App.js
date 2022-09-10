@@ -18,7 +18,7 @@ import {
   Switch,
   Redirect,
   HashRouter,
-  useHistory
+  useHistory,
 } from "react-router-dom";
 // import PageNotFound from "./PageNotFound";
 
@@ -39,7 +39,7 @@ const App = () => {
   const [isReg, setIsReg] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const history = useHistory();
 
   const onRegister = ({ email, password }) => {
@@ -51,19 +51,23 @@ const App = () => {
         history.push("/sign-in");
       })
       .catch((err) => {
-        setMessage(err.message);
+        err.message === undefined ? setMessage(err.error) : setMessage(err.message);
         setIsReg(false);
         setInfoPopupOpen(true);
       });
   };
 
   const onLogin = ({ email, password }) => {
-    return authorize(email, password).then((res) => {
-      if (res) {
-        localStorage.setItem("token", res.token);
-        setLoggedIn(true);
-      }
-    });
+    return authorize(email, password)
+      .then((res) => {
+        if (res) {
+          localStorage.setItem("token", res.token);
+          setLoggedIn(true);
+        }
+      })
+      .catch(() => {
+        history.push("/sign-in");
+      });
   };
 
   // проверка валидности токена и получения email
@@ -221,9 +225,9 @@ const App = () => {
 
   useEffect(() => {
     if (loggedIn) {
-      history.push('/');
+      history.push("/");
     } else {
-      history.push('/sign-in');
+      history.push("/sign-in");
     }
   }, [loggedIn]);
 

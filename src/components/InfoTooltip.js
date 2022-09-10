@@ -10,7 +10,6 @@ function InfoToolTip({ isOpen, isReg, okText, errText, onClose, message }) {
     }
   };
 
-  console.log(message)
   return (
     <div
       className={isOpen ? "popup popup_opened" : "popup"}
