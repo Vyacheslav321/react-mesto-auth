@@ -1,3 +1,18 @@
+# Проектная работа №12: mesto-react-auth
+
+Данный репозиторий создан в рамках обучения на [Yandex.Practicum](https://practicum.yandex.ru "Я практикум")
+
+### Обзор
+
+Проектная работа 12: В работе добавляется регистрация и авторизация. 
+
+**Описание проектной работы**
+В работе реализованы регистрация и авторизация на проекте mesto-react из прошлой проектной работы. 
+
+
+### `npm i react-router-dom@5.3.3`
+### `npx create-react-app .`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
