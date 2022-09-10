@@ -1,4 +1,6 @@
 .popup__container_type_message {
+  width: 430px;
+  height: 330px;
   display: flex;
   flex-direction: column;
   justify-content: center;

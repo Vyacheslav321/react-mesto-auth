@@ -1,5 +1,6 @@
 .popup__container_type_input {
   width: 430px;
+  height: 330px;
 }
 
 @media screen and (max-width: 567px) {

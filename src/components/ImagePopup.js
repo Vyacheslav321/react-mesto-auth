@@ -1,8 +1,14 @@
 function ImagePopup({ card, onClose }) {
+  const handleOverlayClick = (evt) => {
+    if (evt.target === evt.currentTarget) {
+      onClose();
+    }
+  };
+  
   return (
     <section
       className={`popup popup_type_bigpicture ${card.link && "popup_opened"}`}
-      onClick={onClose}
+      onClick={handleOverlayClick}
     >
       <div className="popup__container popup__container_type_picture">
         <button
@@ -11,8 +17,12 @@ function ImagePopup({ card, onClose }) {
           aria-label="Закрыть"
           onClick={onClose}
         ></button>
-        <img className="popup__picture" src={card.link} alt={card.name} />
-        <p className="popup__text">{card.name}</p>
+        <figure>
+          <img className="popup__picture" src={card.link} alt={card.name} />
+          <figcaption className="popup__text">{card.name}</figcaption>
+        </figure>
+        {/* <img className="popup__picture" src={card.link} alt={card.name} /> */}
+        {/* <p className="popup__text">{card.name}</p> */}
       </div>
     </section>
   );
