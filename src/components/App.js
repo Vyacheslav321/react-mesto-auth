@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Login from "./Login";
@@ -51,7 +51,9 @@ const App = () => {
         history.push("/sign-in");
       })
       .catch((err) => {
-        err.message === undefined ? setMessage(err.error) : setMessage(err.message);
+        err.message === undefined
+          ? setMessage(err.error)
+          : setMessage(err.message);
         setIsReg(false);
         setInfoPopupOpen(true);
       });
@@ -65,36 +67,44 @@ const App = () => {
           setLoggedIn(true);
         }
       })
-      .catch(() => {
-        history.push("/sign-in");
+      .catch((err) => {
+        err.message === undefined
+          ? setMessage(err.error)
+          : setMessage(err.message);
+        setIsReg(false);
+        setInfoPopupOpen(true);
       });
   };
 
   // проверка валидности токена и получения email
   useEffect(() => {
-    if (loggedIn) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        getToken(token).then((res) => {
-          if (res) {
-            setEmail(res.data.email);
-            setLoggedIn(true);
-          }
-        });
-      }
-    }
-  }, [loggedIn]);
-
-  useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getCards()])
-      .then(([userInfo, cardData]) => {
-        // cardData.reverse();
-        setCurrentUser(userInfo);
-        setCards(cardData);
+    const token = localStorage.getItem("token");
+    if (token) {
+      getToken(token)
+      .then((res) => {
+          setLoggedIn(true);
+          setEmail(res.data.email);
+          history.push('/')
       })
       .catch((err) => {
-        console.log(`Ошибка загрузки данных ${err}`);
-      });
+        console.log(err);
+      })
+    }
+  }, []);
+
+  // загрузка карточек и данных пользователя после авторизации
+  useEffect(() => {
+    if (loggedIn) {
+      Promise.all([api.getUserInfo(), api.getCards()])
+        .then(([userInfo, cardData]) => {
+          // cardData.reverse();
+          setCurrentUser(userInfo);
+          setCards(cardData);
+        })
+        .catch((err) => {
+          console.log(`Ошибка загрузки данных ${err}`);
+        });
+    }
   }, [loggedIn]);
 
   function handleEditAvatarClick() {
@@ -222,14 +232,6 @@ const App = () => {
     setSelectedCard({});
     setInfoPopupOpen(false);
   }
-
-  useEffect(() => {
-    if (loggedIn) {
-      history.push("/");
-    } else {
-      history.push("/sign-in");
-    }
-  }, [loggedIn]);
 
   const handleExit = () => {
     localStorage.removeItem("token");
