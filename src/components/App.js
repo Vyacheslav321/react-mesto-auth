@@ -17,7 +17,7 @@ import {
   Route,
   Switch,
   Redirect,
-  HashRouter,
+  BrowserRouter,
   useHistory,
 } from "react-router-dom";
 // import PageNotFound from "./PageNotFound";
@@ -63,8 +63,9 @@ const App = () => {
     return authorize(email, password)
       .then((res) => {
         if (res) {
-          localStorage.setItem("token", res.token);
+          localStorage.setItem("jwt", res.token);
           setLoggedIn(true);
+          history.replace({ pathname: "/" });
         }
       })
       .catch((err) => {
@@ -78,17 +79,17 @@ const App = () => {
 
   // проверка валидности токена и получения email
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwt");
     if (token) {
       getToken(token)
-      .then((res) => {
-          setLoggedIn(true);
+        .then((res) => {
           setEmail(res.data.email);
-          history.push('/')
-      })
-      .catch((err) => {
-        console.log(err);
-      })
+          setLoggedIn(true);
+          history.push("/");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
     }
   }, []);
 
@@ -234,15 +235,15 @@ const App = () => {
   }
 
   const handleExit = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("jwt");
     setLoggedIn(false);
   };
 
   return (
     <div className="page">
       <CurrentUserContext.Provider value={currentUser}>
-        <HashRouter>
-          <Header eemail={email} onExit={handleExit} />
+
+          <Header email={email} onExit={handleExit} />
           <Switch>
             <ProtectedRoute
               exact
@@ -276,7 +277,6 @@ const App = () => {
           <Route exact path="/">
             <Footer />
           </Route>
-        </HashRouter>
 
         <InfoTooltip
           isOpen={infoPopupOpen}
