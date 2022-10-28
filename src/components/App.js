@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useCookies } from 'react-cookie'
 import Header from "./Header";
 import Main from "./Main";
 import Login from "./Login";
@@ -17,7 +18,7 @@ import {
   Route,
   Switch,
   Redirect,
-  BrowserRouter,
+  // BrowserRouter,
   useHistory,
 } from "react-router-dom";
 // import PageNotFound from "./PageNotFound";
@@ -29,9 +30,11 @@ const App = () => {
   const [isImagePopupOpen, setisImagePopupOpen] = useState(false);
   const [infoPopupOpen, setInfoPopupOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState({
+    _id: " ",
     name: " ",
     about: " ",
     avatar: " ",
+    email: " ",
   });
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState({});
@@ -41,6 +44,7 @@ const App = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const history = useHistory();
+  const [cookies, setCookie, removeCookie] = useCookies(["jwt"]);
 
   const onRegister = ({ email, password }) => {
     return register(email, password)
@@ -63,7 +67,7 @@ const App = () => {
     return authorize(email, password)
       .then((res) => {
         if (res) {
-          localStorage.setItem("jwt", res.token);
+          setCookie("jwt", res.token, { path: '/' })
           setLoggedIn(true);
           history.replace({ pathname: "/" });
         }
@@ -79,7 +83,7 @@ const App = () => {
 
   // проверка валидности токена и получения email
   useEffect(() => {
-    const token = localStorage.getItem("jwt");
+    const token = cookies["jwt"];
     if (token) {
       getToken(token)
         .then((res) => {
@@ -127,16 +131,12 @@ const App = () => {
 
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api
-      .changeLikeCardStatus(card._id, !isLiked)
+    api.changeLikeCardStatus(card._id, !isLiked)
+      // Обновляем стейт
       .then((newCard) => {
-        // Обновляем стейт
-        // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
       })
       .catch((err) => {
         console.log(err);
@@ -149,7 +149,7 @@ const App = () => {
       .then(() => {
         // Обновляем стейт
         // копиюя массива за исключением удалённой карточки
-        setCards((state) => state.filter((c) => c._id !== card._id));
+        setCards((state) => state.filter(c => c._id !== card._id));
       })
       .catch((err) => {
         console.log(err);
@@ -235,7 +235,8 @@ const App = () => {
   }
 
   const handleExit = () => {
-    localStorage.removeItem("jwt");
+    removeCookie("jwt")
+    // localStorage.removeItem("jwt");
     setLoggedIn(false);
   };
 
