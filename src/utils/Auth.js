@@ -1,4 +1,4 @@
-const BASE_URL = "https://auth.nomoreparties.co";
+import { BASE_URL } from "./constants";
 
 function checkResOk(res) {
   if (res.ok) {
@@ -37,7 +37,7 @@ export const getToken = (token) => {
     metod: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer${token}`,
     },
   }).then(checkResOk);
 };

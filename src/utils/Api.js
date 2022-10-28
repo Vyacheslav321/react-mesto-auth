@@ -1,6 +1,7 @@
+import { BASE_URL } from "./constants";
+
 class Api {
   constructor({ defaultUrl, headers }) {
-    this._defaultUrl = defaultUrl;
     this._headers = headers;
   }
 
@@ -13,32 +14,36 @@ class Api {
 
   // Получение информаци о карточках и пользователе
   getCards() {
-    return fetch(`${this._defaultUrl}/cards`, {
+    return fetch(`${BASE_URL}/cards`, {
       method: "GET",
       headers: this._headers,
+      credentials: 'include',
     }).then(this._checkResOk);
   }
 
   getUserInfo() {
-    return fetch(`${this._defaultUrl}/users/me`, {
+    return fetch(`${BASE_URL}/users/me`, {
       method: "GET",
       headers: this._headers,
+      credentials: 'include',
     }).then(this._checkResOk);
   }
 
   // ЛАЙКИ
   changeLikeCardStatus(id, isLiked) {
-    return fetch(`${this._defaultUrl}/cards/${id}/likes`, {
+    return fetch(`${BASE_URL}/cards/${id}/likes`, {
       method: `${isLiked ? "PUT" : "DELETE"}`,
       headers: this._headers,
+      credentials: 'include',
     }).then(this._checkResOk);
   }
 
   //  Добавление/Удаление карточки пользователя
   createUserCard(cardItem) {
-    return fetch(`${this._defaultUrl}/cards`, {
+    return fetch(`${BASE_URL}/cards`, {
       method: "POST",
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify({
         name: cardItem.name,
         link: cardItem.link,
@@ -47,16 +52,18 @@ class Api {
   }
 
   deleteUserCard(idCard) {
-    return fetch(`${this._defaultUrl}/cards/${idCard}`, {
+    return fetch(`${BASE_URL}/cards/${idCard}`, {
       method: "DELETE",
       headers: this._headers,
+      credentials: 'include',
     }).then(this._checkResOk);
   }
   // Редактирование инфо о пользователе
   setUserInfo(name, about) {
-    return fetch(`${this._defaultUrl}/users/me`, {
+    return fetch(`${BASE_URL}/users/me`, {
       method: "PATCH",
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify({
         name: name,
         about: about,
@@ -65,9 +72,10 @@ class Api {
   }
   // Редактирование аватара пользователя
   setAvatar(userData) {
-    return fetch(`${this._defaultUrl}/users/me/avatar`, {
+    return fetch(`${BASE_URL}/users/me/avatar`, {
       method: "PATCH",
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify({
         avatar: userData,
       }),
@@ -76,9 +84,8 @@ class Api {
 }
 
 const api = new Api({
-  defaultUrl: "https://mesto.nomoreparties.co/v1/cohort-42",
   headers: {
-    authorization: "a60c123e-be9f-453f-be98-1b1679621350",
+    "Accept": "application/json",
     "Content-Type": "application/json"
   }
 });
