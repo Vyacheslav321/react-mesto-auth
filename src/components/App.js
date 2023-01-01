@@ -95,7 +95,7 @@ const App = () => {
           console.log(err.message);
         });
     }
-  }, []);
+  }, [cookies, history]);
 
   // загрузка карточек и данных пользователя после авторизации
   useEffect(() => {
